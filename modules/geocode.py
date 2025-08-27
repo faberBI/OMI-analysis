@@ -5,7 +5,9 @@ def geocode_address(address):
     geolocator = Nominatim(user_agent="omi-analysis")
     for i in range(3):  # retry fino a 3 volte
         try:
-            return geolocator.geocode(address, timeout=10)
-        except Exception as e:
+            location = geolocator.geocode(address, timeout=10)
+            if location:
+                return location.latitude, location.longitude
+        except Exception:
             time.sleep(5)
-    return None
+    return None, None
