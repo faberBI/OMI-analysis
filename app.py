@@ -12,10 +12,8 @@ import os
 # ============================
 # 1. CARICAMENTO DATI
 # ============================
-
 @st.cache_data
 def get_data():
-    # Se manca il file principale dello shapefile, scarica da Kaggle
     shp_path = "data/ZONE_OMI_2_2024.shp"
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
@@ -26,6 +24,7 @@ def get_data():
     )
 
 gdf = get_data()
+
 
 
 
