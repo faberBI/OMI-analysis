@@ -28,9 +28,6 @@ def get_data():
     return load_data(csv_path, shp_path)
 
 
-gdf = get_data()
-
-
 # ============================
 # 2. INTERFACCIA STREAMLIT
 # ============================
