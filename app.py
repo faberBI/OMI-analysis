@@ -6,6 +6,8 @@ from modules.data_loader import load_data
 from modules.geocode import geocode_address
 from modules.omi_utils import find_omi_zone
 from modules.download_data import download_from_kaggle
+import os
+
 
 # ============================
 # 1. CARICAMENTO DATI
@@ -13,16 +15,18 @@ from modules.download_data import download_from_kaggle
 
 @st.cache_data
 def get_data():
-    # scarica solo se non hai ancora i file
-    if not os.path.exists("data/ZONE_OMI_2_2024.shp"):
-        download_from_kaggle("TUO_USERNAME/zone-omi-2024", "data")
+    # Se manca il file principale dello shapefile, scarica da Kaggle
+    shp_path = "data/ZONE_OMI_2_2024.shp"
+    if not os.path.exists(shp_path):
+        download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
     return load_data(
         "data/QI_20242_VALORI.csv",
-        "data/ZONE_OMI_2_2024.shp"
+        shp_path
     )
 
 gdf = get_data()
+
 
 
 # ============================
