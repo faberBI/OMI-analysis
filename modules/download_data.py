@@ -3,18 +3,16 @@ import subprocess
 
 def download_from_kaggle(dataset: str, path: str = "data"):
     """
-    Scarica un dataset da Kaggle nella cartella data/.
-    Richiede 'kaggle' CLI installata e API Key configurata (~/.kaggle/kaggle.json).
-    
-    :param dataset: nome del dataset Kaggle, es. "username/zone-omi-2024"
-    :param path: cartella di destinazione
+    Scarica un dataset da Kaggle nella cartella indicata.
+    Richiede la CLI 'kaggle' configurata correttamente con API key.
     """
     if not os.path.exists(path):
         os.makedirs(path)
 
-    # scarica con kaggle CLI
+    print(f"Scaricando il dataset {dataset}...")
     subprocess.run([
-        "kaggle", "datasets", "download", "-d", dataset, "-p", path, "--unzip"
+        "kaggle", "datasets", "download", "-d", dataset,
+        "-p", path, "--unzip"
     ], check=True)
+    print(f"Dataset {dataset} scaricato e decompresso in '{path}'.")
 
-    print(f"✅ Dataset {dataset} scaricato in {path}")
