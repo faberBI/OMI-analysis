@@ -15,22 +15,18 @@ from modules.download_data import download_from_kaggle
 @st.cache_data
 def get_data():
     shp_path = "data/ZONE_OMI_2_2024.shp"
-    csv_path = "data/QI_20242_VALORI.csv"
 
-    # Scarica shapefile se non presente
+    # Se non esiste lo shapefile → scarica dataset OMI
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
-    # Scarica csv se non presente
+    # Percorso del CSV corretto dentro la sottocartella di Kaggle
+    csv_path = "data/qi-20242-valori/QI_20242_VALORI.csv"
     if not os.path.exists(csv_path):
         download_from_kaggle("faberbi/qi-20242-valori", "data")
 
-    # 🔍 DEBUG: stampa cosa c’è in data/
-    import os
-    files = list(os.walk("data"))
-    st.write("📂 Contenuto cartella data:", files)
-
     return load_data(csv_path, shp_path)
+
 
 
 
