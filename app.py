@@ -17,30 +17,31 @@ from modules.download_data import download_from_kaggle
 def get_data():
     shp_path = "data/ZONE_OMI_2_2024.shp"
 
-    # Scarica shapefile se non c’è
+    # scarica shapefile se non presente
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
-    # Cerca il CSV dentro tutte le sottocartelle di data/
+    # cerca CSV ovunque sotto data/
     csv_path = None
     for root, dirs, files in os.walk("data"):
         for f in files:
-            if f == "QI_20242_VALORI.csv":
+            if f.lower() == "qi_20242_valori.csv":
                 csv_path = os.path.join(root, f)
                 break
 
-    # Se non trovato → scarica da Kaggle
+    # se non trovato, scarica da kaggle e riprova
     if csv_path is None:
         download_from_kaggle("faberbi/qi-20242-valori", "data")
         for root, dirs, files in os.walk("data"):
             for f in files:
-                if f == "QI_20242_VALORI.csv":
+                if f.lower() == "qi_20242_valori.csv":
                     csv_path = os.path.join(root, f)
                     break
 
     if csv_path is None:
-        raise FileNotFoundError("Non trovo QI_20242_VALORI.csv nemmeno dopo il download.")
+        raise FileNotFoundError("⚠️ Non trovo QI_20242_VALORI.csv nemmeno dopo il download.")
 
+    st.write(f"📂 Caricato file CSV da: {csv_path}")  # debug su Streamlit
     return load_data(csv_path, shp_path)
 
 
