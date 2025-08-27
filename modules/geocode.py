@@ -1,11 +1,11 @@
 from geopy.geocoders import Nominatim
+import time
 
-def geocode_address(address: str):
-    """
-    Geocodifica un indirizzo in (lat, lon) usando Nominatim.
-    """
-    geolocator = Nominatim(user_agent="omi_app")
-    location = geolocator.geocode(address)
-    if location:
-        return location.latitude, location.longitude
-    return None, None
+def geocode_address(address):
+    geolocator = Nominatim(user_agent="omi-analysis")
+    for i in range(3):  # retry fino a 3 volte
+        try:
+            return geolocator.geocode(address, timeout=10)
+        except Exception as e:
+            time.sleep(5)
+    return None
