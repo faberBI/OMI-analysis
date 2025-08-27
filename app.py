@@ -1,33 +1,35 @@
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+import os
 
 from modules.data_loader import load_data
 from modules.geocode import geocode_address
 from modules.omi_utils import find_omi_zone
 from modules.download_data import download_from_kaggle
-import os
 
 
 # ============================
 # 1. CARICAMENTO DATI
 # ============================
-
 @st.cache_data
 def get_data():
-    csv_path = "data/QI_20242_VALORI.csv"
     shp_path = "data/ZONE_OMI_2_2024.shp"
+    csv_path = "data/QI_20242_VALORI.csv"
 
-    # Debug: controlliamo cosa vede Streamlit
-    st.write("📂 Contenuto di ./data:", os.listdir("data") if os.path.exists("data") else "cartella non trovata")
-    st.write("📄 CSV esiste?", os.path.exists(csv_path))
-    st.write("📄 SHP esiste?", os.path.exists(shp_path))
-
-    # Se lo shapefile non c'è, scaricalo da Kaggle
+    # Scarica shapefile se non presente
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
+    # Scarica csv se non presente
+    if not os.path.exists(csv_path):
+        download_from_kaggle("faberbi/qi-20242-valori", "data")
+
     return load_data(csv_path, shp_path)
+
+
+gdf = get_data()
+
 
 # ============================
 # 2. INTERFACCIA STREAMLIT
