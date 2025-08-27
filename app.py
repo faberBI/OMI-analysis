@@ -13,8 +13,6 @@ from modules.download_data import download_from_kaggle
 # 1. CARICAMENTO DATI
 # ============================
 
-import os
-
 @st.cache_data
 def get_data():
     shp_path = "data/ZONE_OMI_2_2024.shp"
@@ -47,8 +45,8 @@ def get_data():
     return load_data(csv_path, shp_path)
 
 
-
-
+# Carica i dati una volta
+gdf = get_data()
 
 
 # ============================
@@ -62,7 +60,7 @@ indirizzo = st.text_input("📍 Inserisci indirizzo (es. 'Via Roma 10, Milano')"
 if indirizzo:
     lat, lon = geocode_address(indirizzo)
 
-    if lat and lon:
+    if lat is not None and lon is not None:
         st.success(f"Coordinate trovate: {lat:.6f}, {lon:.6f}")
 
         zona = find_omi_zone(lat, lon, gdf)
@@ -81,4 +79,4 @@ if indirizzo:
         else:
             st.error("❌ L'indirizzo non ricade in nessuna zona OMI.")
     else:
-        st.error("Impossibile geolocalizzare l'indirizzo. Riprova.")
+        st.error("⚠️ Impossibile geolocalizzare l'indirizzo. Riprova.")
