@@ -12,21 +12,22 @@ import os
 # ============================
 # 1. CARICAMENTO DATI
 # ============================
+
 @st.cache_data
 def get_data():
+    csv_path = "data/QI_20242_VALORI.csv"
     shp_path = "data/ZONE_OMI_2_2024.shp"
+
+    # Debug: controlliamo cosa vede Streamlit
+    st.write("📂 Contenuto di ./data:", os.listdir("data") if os.path.exists("data") else "cartella non trovata")
+    st.write("📄 CSV esiste?", os.path.exists(csv_path))
+    st.write("📄 SHP esiste?", os.path.exists(shp_path))
+
+    # Se lo shapefile non c'è, scaricalo da Kaggle
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
-    return load_data(
-        "data/QI_20242_VALORI.csv",
-        shp_path
-    )
-
-gdf = get_data()
-
-
-
+    return load_data(csv_path, shp_path)
 
 # ============================
 # 2. INTERFACCIA STREAMLIT
