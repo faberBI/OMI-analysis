@@ -5,18 +5,25 @@ from streamlit_folium import st_folium
 from modules.data_loader import load_data
 from modules.geocode import geocode_address
 from modules.omi_utils import find_omi_zone
+from modules.download_data import download_from_kaggle
 
 # ============================
 # 1. CARICAMENTO DATI
 # ============================
+
 @st.cache_data
 def get_data():
+    # scarica solo se non hai ancora i file
+    if not os.path.exists("data/ZONE_OMI_2_2024.shp"):
+        download_from_kaggle("TUO_USERNAME/zone-omi-2024", "data")
+
     return load_data(
-        "data/QI_20242_VALORI.csv", # valori
-        "data/ZONE_OMI_2_2024.shp"  # zone aggiornate
+        "data/QI_20242_VALORI.csv",
+        "data/ZONE_OMI_2_2024.shp"
     )
 
 gdf = get_data()
+
 
 # ============================
 # 2. INTERFACCIA STREAMLIT
