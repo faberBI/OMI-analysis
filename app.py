@@ -12,8 +12,8 @@ from modules.omi_utils import find_omi_zone
 @st.cache_data
 def get_data():
     return load_data(
-        "data/QI_20242_VALORI.csv",
-        "data/final_gdf.geojson"   # salvato da final_gdf.to_file(..., driver="GeoJSON")
+        "data/QI_20242_VALORI.csv", # valori
+        "data/ZONE_OMI_2_2024.shp"  # zone aggiornate
     )
 
 gdf = get_data()
