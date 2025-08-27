@@ -2,29 +2,31 @@ import geopandas as gpd
 import pandas as pd
 
 def load_data(csv_path, shp_path):
-    # Carica CSV dei valori
-    omi = pd.read_csv(csv_path, sep=";")
+    # Carica CSV valori OMI
+    df = pd.read_csv(csv_path, sep=";")
 
-    # Carica shapefile
-    gdf = gpd.read_file(shp_path)
-
-    # 🔎 Debug (utile la prima volta)
-    # import streamlit as st
-    # st.write("Colonne shapefile:", list(gdf.columns))
-
-    # Merge sui campi corretti
-    df = omi.merge(
-        gdf[['COD_BELFIORE', 'ZONA_OMI', 'geometry']],
-        how="left",
-        left_on=['Comune_amm', 'Zona'],
-        right_on=['COD_BELFIORE', 'ZONA_OMI']
-    )
-
-    # Rinomina per avere uniformità
+    # Uniforma i nomi chiave nel CSV
     df = df.rename(columns={
-        "COD_BELFIORE": "Belfiore",
-        "ZONA_OMI": "Zona OMI"
+        "Comune_amm": "COD_BELFIORE",
+        "Zona": "ZONA_OMI"
     })
 
-    return gpd.GeoDataFrame(df, geometry="geometry")
+    # Carica shapefile OMI
+    gdf = gpd.read_file(shp_path)
+
+    # Uniforma i nomi chiave nello shapefile
+    gdf = gdf.rename(columns={
+        "Belfiore": "COD_BELFIORE",
+        "Zona OMI": "ZONA_OMI"
+    })
+
+    # Merge shapefile + CSV sul codice Belfiore + Zona
+    merged = gdf.merge(
+        df,
+        how="left",
+        on=["COD_BELFIORE", "ZONA_OMI"]
+    )
+
+    merged = gpd.GeoDataFrame(merged, geometry = 'geometry')
+    return merged
 
