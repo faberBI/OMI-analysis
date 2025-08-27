@@ -13,6 +13,8 @@ from modules.download_data import download_from_kaggle
 # 1. CARICAMENTO DATI
 # ============================
 
+import os
+
 @st.cache_data
 def get_data():
     shp_path = "data/ZONE_OMI_2_2024.shp"
@@ -29,7 +31,7 @@ def get_data():
                 csv_path = os.path.join(root, f)
                 break
 
-    # se non trovato, scarica da kaggle e riprova
+    # se non trovato, scarica da kaggle
     if csv_path is None:
         download_from_kaggle("faberbi/qi-20242-valori", "data")
         for root, dirs, files in os.walk("data"):
@@ -41,8 +43,9 @@ def get_data():
     if csv_path is None:
         raise FileNotFoundError("⚠️ Non trovo QI_20242_VALORI.csv nemmeno dopo il download.")
 
-    st.write(f"📂 Caricato file CSV da: {csv_path}")  # debug su Streamlit
+    st.write(f"📂 Caricato file CSV da: {csv_path}")  # debug visibile su Streamlit
     return load_data(csv_path, shp_path)
+
 
 
 
