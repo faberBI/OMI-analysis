@@ -12,20 +12,37 @@ from modules.download_data import download_from_kaggle
 # ============================
 # 1. CARICAMENTO DATI
 # ============================
+
 @st.cache_data
 def get_data():
     shp_path = "data/ZONE_OMI_2_2024.shp"
 
-    # Se non esiste lo shapefile → scarica dataset OMI
+    # Scarica shapefile se non c’è
     if not os.path.exists(shp_path):
         download_from_kaggle("faberbi/zone-omi-2-sem-2024", "data")
 
-    # Percorso del CSV corretto dentro la sottocartella di Kaggle
-    csv_path = "data/qi-20242-valori/QI_20242_VALORI.csv"
-    if not os.path.exists(csv_path):
+    # Cerca il CSV dentro tutte le sottocartelle di data/
+    csv_path = None
+    for root, dirs, files in os.walk("data"):
+        for f in files:
+            if f == "QI_20242_VALORI.csv":
+                csv_path = os.path.join(root, f)
+                break
+
+    # Se non trovato → scarica da Kaggle
+    if csv_path is None:
         download_from_kaggle("faberbi/qi-20242-valori", "data")
+        for root, dirs, files in os.walk("data"):
+            for f in files:
+                if f == "QI_20242_VALORI.csv":
+                    csv_path = os.path.join(root, f)
+                    break
+
+    if csv_path is None:
+        raise FileNotFoundError("Non trovo QI_20242_VALORI.csv nemmeno dopo il download.")
 
     return load_data(csv_path, shp_path)
+
 
 
 
