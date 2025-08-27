@@ -8,3 +8,4 @@ rtree
 folium
 streamlit-folium
 geopy
+kaggle
