@@ -25,7 +25,13 @@ def get_data():
     if not os.path.exists(csv_path):
         download_from_kaggle("faberbi/qi-20242-valori", "data")
 
+    # 🔍 DEBUG: stampa cosa c’è in data/
+    import os
+    files = list(os.walk("data"))
+    st.write("📂 Contenuto cartella data:", files)
+
     return load_data(csv_path, shp_path)
+
 
 
 # ============================
